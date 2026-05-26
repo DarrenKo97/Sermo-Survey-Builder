@@ -42,6 +42,19 @@ export default function Home() {
     router.push(`/surveys/${data.id}/edit`)
   }
 
+  async function deleteSurvey(id: string, title: string) {
+  const confirmed = window.confirm(
+    `Delete "${title}"? This cannot be undone.`
+  )
+  if (!confirmed) return
+  const { error } = await supabase.from('surveys').delete().eq('id', id)
+  if (error) {
+    console.error(error)
+    return
+  }
+  setSurveys(surveys.filter((s) => s.id !== id))
+}
+
   return (
     <main className="min-h-screen max-w-3xl mx-auto px-6 py-20">
       <header className="mb-16 flex items-end justify-between">
@@ -76,21 +89,44 @@ export default function Home() {
       ) : (
         <ul className="divide-y divide-stone-200">
           {surveys.map((s) => (
-            <li key={s.id}>
+            <li
+              key={s.id}
+              className="flex items-center justify-between py-5 hover:bg-stone-100 -mx-3 px-3 transition-colors group"
+            >
               <Link
                 href={`/surveys/${s.id}/edit`}
-                className="flex items-center justify-between py-5 hover:bg-stone-100 -mx-3 px-3 transition-colors group"
+                className="flex-1 text-base group-hover:text-accent transition-colors"
               >
-                <span className="text-base group-hover:text-accent transition-colors">
-                  {s.title}
-                </span>
+                {s.title}
+              </Link>
+              <div className="flex items-center gap-5">
                 <span className="text-xs text-stone-400 tracking-wider">
                   {new Date(s.updated_at).toLocaleDateString(undefined, {
                     month: 'short',
                     day: 'numeric',
                   })}
                 </span>
-              </Link>
+                <button
+                  onClick={() => deleteSurvey(s.id, s.title)}
+                  className="text-stone-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label={`Delete ${s.title}`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                </button>
+              </div>
             </li>
           ))}
         </ul>
