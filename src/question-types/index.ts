@@ -2,12 +2,14 @@ import * as singleSelect from './singleSelect'
 import * as multiSelect from './multiSelect'
 import * as numeric from './numeric'
 import * as grid from './grid'
+import * as ranking from './ranking'
 
 export const registry = {
   singleSelect,
   multiSelect,
   numeric,
   grid,
+  ranking,
 } as const
 
 export type QuestionType = keyof typeof registry
@@ -19,4 +21,5 @@ export const questionTypeLabels: Record<QuestionType, string> = {
   multiSelect: 'Multi select',
   numeric: 'Number',
   grid: 'Grid',
+  ranking: 'Ranking',
 }

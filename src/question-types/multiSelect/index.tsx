@@ -13,6 +13,20 @@ export const defaultValue = (id: string): MultiSelectQuestion => ({
   ],
 })
 
+export function validate(
+  question: MultiSelectQuestion,
+  value: unknown
+): string | null {
+  const empty =
+    value === undefined || (Array.isArray(value) && value.length === 0)
+  if (empty) return question.required ? 'Required' : null
+  if (!Array.isArray(value)) return 'Invalid value'
+  if (!value.every((v) => question.options.some((o) => o.id === v))) {
+    return 'Invalid option'
+  }
+  return null
+}
+
 export const predicates = ['includes'] as const
 
 export function Editor({

@@ -268,7 +268,7 @@ function AddQuestionButton({
         + Add question
       </button>
       {open && (
-        <div className="absolute mt-1 bg-white border border-neutral-200 shadow-sm z-10 min-w-[160px]">
+        <div className="absolute mt-1 bg-white border border-neutral-200 shadow-sm z-10 min-w-40">
           {questionTypeList.map((t) => (
             <button
               key={t}

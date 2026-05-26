@@ -13,6 +13,18 @@ export const defaultValue = (id: string): SingleSelectQuestion => ({
   ],
 })
 
+export function validate(
+  question: SingleSelectQuestion,
+  value: unknown
+): string | null {
+  if (value === undefined || value === '') {
+    return question.required ? 'Required' : null
+  }
+  if (typeof value !== 'string') return 'Invalid value'
+  if (!question.options.some((o) => o.id === value)) return 'Invalid option'
+  return null
+}
+
 export const predicates = ['equals', 'notEquals'] as const
 
 export function Editor({

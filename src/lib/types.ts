@@ -40,11 +40,17 @@ export type GridQuestion = BaseQuestion & {
   columns: Option[]
 }
 
+export type RankingQuestion = BaseQuestion & {
+  type: 'ranking'
+  items: Option[]
+}
+
 export type Question =
   | SingleSelectQuestion
   | MultiSelectQuestion
   | NumericQuestion
   | GridQuestion
+  | RankingQuestion
 
 export type Survey = {
   id: string

@@ -9,6 +9,21 @@ export const defaultValue = (id: string): NumericQuestion => ({
   required: false,
 })
 
+export function validate(
+  question: NumericQuestion,
+  value: unknown
+): string | null {
+  if (value === undefined) return question.required ? 'Required' : null
+  if (typeof value !== 'number' || isNaN(value)) return 'Must be a number'
+  if (question.min !== undefined && value < question.min) {
+    return `Minimum ${question.min}`
+  }
+  if (question.max !== undefined && value > question.max) {
+    return `Maximum ${question.max}`
+  }
+  return null
+}
+
 export const predicates = ['equals', 'notEquals', 'gt', 'lt'] as const
 
 export function Editor({

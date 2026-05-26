@@ -12,7 +12,9 @@ export default function TakePage() {
   const [survey, setSurvey] = useState<Survey | null>(null)
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState<Answers>({})
-  const [currentIdx, setCurrentIdx] = useState(0)
+  const [history, setHistory] = useState<number[]>([0])
+  const currentIdx = history[history.length - 1]
+  const canGoBack = history.length > 1
   const [done, setDone] = useState(false)
 
   useEffect(() => {
@@ -76,8 +78,16 @@ export default function TakePage() {
   function advance() {
     if (!survey) return
     const next = nextIndex(survey.questions[currentIdx])
-    if (next === 'end') setDone(true)
-    else setCurrentIdx(next)
+    if (next === 'end') {
+      setDone(true)
+    } else {
+      setHistory([...history, next])
+    }
+  }
+
+  function back() {
+    if (history.length <= 1) return
+    setHistory(history.slice(0, -1))
   }
 
   if (loading) {
@@ -130,7 +140,7 @@ export default function TakePage() {
             <button
               onClick={() => {
                 setAnswers({})
-                setCurrentIdx(0)
+                setHistory([0])
                 setDone(false)
               }}
               className="text-neutral-500 hover:text-neutral-900 transition-colors"
@@ -146,17 +156,11 @@ export default function TakePage() {
   const q = survey.questions[currentIdx]
   const TypeRespondent = registry[q.type as QuestionType]?.Respondent
   const isLast = currentIdx === survey.questions.length - 1
-  const canAdvance = (() => {
-  if (q.required && answers[q.id] === undefined) return false
-  if (q.type === 'numeric') {
-    const v = answers[q.id]
-    if (typeof v === 'number') {
-      if (q.min !== undefined && v < q.min) return false
-      if (q.max !== undefined && v > q.max) return false
-    }
-  }
-  return true
-})()
+  const validateFn = registry[q.type as QuestionType]?.validate
+  const validationError = validateFn
+  ? validateFn(q as never, answers[q.id] as never)
+  : null
+  const canAdvance = validationError === null
 
   return (
     <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
@@ -184,13 +188,23 @@ export default function TakePage() {
             }
           />
         )}
-        <button
-          onClick={advance}
-          disabled={!canAdvance}
-          className="bg-neutral-900 text-white px-6 py-2 hover:bg-neutral-700 transition-colors disabled:opacity-30"
-        >
-          {isLast ? 'Finish' : 'Next'}
-        </button>
+        <div className="flex items-center gap-3">
+          {canGoBack && (
+            <button
+              onClick={back}
+              className="text-neutral-500 hover:text-neutral-900 transition-colors px-4 py-2"
+            >
+              ← Back
+            </button>
+          )}
+          <button
+            onClick={advance}
+            disabled={!canAdvance}
+            className="bg-neutral-900 text-white px-6 py-2 hover:bg-neutral-700 transition-colors disabled:opacity-30"
+          >
+            {isLast ? 'Finish' : 'Next'}
+          </button>
+        </div>
       </div>
     </main>
   )

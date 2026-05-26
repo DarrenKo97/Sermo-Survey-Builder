@@ -18,6 +18,27 @@ export const defaultValue = (id: string): GridQuestion => ({
   ],
 })
 
+export function validate(
+  question: GridQuestion,
+  value: unknown
+): string | null {
+  const answers = (value ?? {}) as Record<string, string>
+  const filled = Object.keys(answers).length > 0
+  if (!filled) return question.required ? 'Required' : null
+  if (typeof value !== 'object' || value === null) return 'Invalid value'
+  if (question.required) {
+    const allRowsAnswered = question.rows.every(
+      (r) => answers[r.id] !== undefined
+    )
+    if (!allRowsAnswered) return 'Answer all rows'
+  }
+  for (const [rowId, colId] of Object.entries(answers)) {
+    if (!question.rows.some((r) => r.id === rowId)) return 'Invalid row'
+    if (!question.columns.some((c) => c.id === colId)) return 'Invalid column'
+  }
+  return null
+}
+
 // Grid as a branch source is not supported in v1. Easy to add later
 // by giving each row/column a predicate, but it bloats the UI.
 export const predicates = [] as const
