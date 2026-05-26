@@ -30,9 +30,9 @@ Asking "how many years have you been in practice?" in Qualtrics means picking Te
 
 **3. No blocks.**
 
-Qualtrics organizes surveys into Blocks, which is where most of the routing complexity comes from. Blocks scope skip logic. Blocks force you into Survey Flow to compose anything across them. Blocks also create a hidden Trash block that parks your deleted questions instead of removing them (I found mine still in the exported QSF). For a linear survey with one branching primitive, blocks add complexity for no obvious user benefit. My tool stores questions as a flat ordered array. Delete deletes. Reorder moves position. The data model fits on one line.
+Qualtrics organizes surveys into Blocks, which is where most of the routing complexity comes from. Blocks scope skip logic. Blocks force you into Survey Flow to compose anything across them. Blocks also create a hidden Trash block that parks your deleted questions instead of removing them (I found mine still in the exported QSF). The toast below is the system surfacing its own complexity as a wall. For a linear survey with one branching primitive, blocks add complexity for no obvious user benefit. My tool stores questions as a flat ordered array. Delete deletes. Reorder moves position. The data model fits on one line.
 
-![Qualtrics Survey Flow with multiple blocks](screenshots/Screenshot_20260526_130147.png)
+![Qualtrics cross-block move error](screenshots/Screenshot_20260526_130147.png)
 
 **4. The empty state asks a question instead of pre-inserting one.**
 

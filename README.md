@@ -4,11 +4,12 @@ A small survey builder built as a take-home assignment. Create surveys with sing
 
 - **Live demo:** [My Vercel Application](https://sermo-survey-builder.vercel.app/)
 - **Repo:** [My Github Repo](https://github.com/DarrenKo97/Sermo-Survey-Builder)
+- **Writeup:** [writeup.md](./writeup.md)
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/your-username/sermo-survey-builder.git
+git clone https://github.com/DarrenKo97/Sermo-Survey-Builder.git
 cd sermo-survey-builder
 npm install
 ```
@@ -20,7 +21,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGc...
 ```
 
-Run the schema in your Supabase SQL editor (see `supabase-schema.sql` below if you want it as a file, or copy from this README's appendix).
+Run the schema from the appendix at the bottom of this README in your Supabase SQL editor.
 
 ```bash
 npm run dev
@@ -48,6 +49,7 @@ src/
     multiSelect/
     numeric/
     grid/
+    ranking/
 ```
 
 The builder, respondent, and branching UI know nothing about specific question types. They look types up in `registry` and dispatch by `question.type`. To add a new question type, you don't touch the builder, the respondent, the branching UI, the database schema, or the JSON export. You add one folder and one line.
