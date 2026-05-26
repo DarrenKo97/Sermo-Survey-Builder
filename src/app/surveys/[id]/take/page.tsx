@@ -93,7 +93,7 @@ export default function TakePage() {
   if (loading) {
     return (
       <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
-        <div className="text-neutral-400 text-sm">Loading…</div>
+        <div className="text-stone-400 text-sm">Loading…</div>
       </main>
     )
   }
@@ -101,12 +101,12 @@ export default function TakePage() {
   if (!survey || survey.questions.length === 0) {
     return (
       <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
-        <div className="text-neutral-500 text-sm">
+        <div className="text-stone-500 text-sm">
           This survey has no questions yet.
         </div>
         <Link
           href={`/surveys/${id}/edit`}
-          className="text-sm text-neutral-900 underline mt-4 inline-block"
+          className="text-sm text-accent hover:text-accent-hover underline mt-4 inline-block transition-colors"
         >
           Back to editor
         </Link>
@@ -117,23 +117,25 @@ export default function TakePage() {
   if (done) {
     return (
       <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
-        <div className="border-l-2 border-neutral-900 pl-6">
-          <div className="text-xs uppercase tracking-wider text-neutral-400 mb-3">
+        <div className="border-l-2 border-accent pl-8">
+          <div className="text-xs uppercase tracking-[0.2em] text-accent mb-4">
             Complete
           </div>
-          <h2 className="text-2xl font-medium mb-6">Thank you.</h2>
-          <details className="text-sm text-neutral-500">
-            <summary className="cursor-pointer hover:text-neutral-900">
+          <h2 className="text-5xl font-serif mb-8 tracking-tight">
+            Thank you.
+          </h2>
+          <details className="text-sm text-stone-500">
+            <summary className="cursor-pointer hover:text-stone-900 transition-colors">
               View captured answers
             </summary>
-            <pre className="mt-3 p-4 bg-neutral-50 text-xs overflow-auto">
+            <pre className="mt-4 p-5 bg-stone-100 text-xs overflow-auto border border-stone-200">
               {JSON.stringify(answers, null, 2)}
             </pre>
           </details>
-          <div className="mt-8 flex gap-4 text-sm">
+          <div className="mt-10 flex gap-5 text-sm">
             <Link
               href={`/surveys/${id}/edit`}
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-stone-500 hover:text-accent transition-colors"
             >
               Back to editor
             </Link>
@@ -143,7 +145,7 @@ export default function TakePage() {
                 setHistory([0])
                 setDone(false)
               }}
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-stone-500 hover:text-accent transition-colors"
             >
               Restart
             </button>
@@ -158,19 +160,24 @@ export default function TakePage() {
   const isLast = currentIdx === survey.questions.length - 1
   const validateFn = registry[q.type as QuestionType]?.validate
   const validationError = validateFn
-  ? validateFn(q as never, answers[q.id] as never)
-  : null
+    ? validateFn(q as never, answers[q.id] as never)
+    : null
   const canAdvance = validationError === null
 
   return (
-    <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
-      <header className="mb-12">
-        <div className="text-xs uppercase tracking-wider text-neutral-400 mb-3">
-          {survey.title}
+    <main className="min-h-screen max-w-2xl mx-auto px-6 py-20">
+      <header className="mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-xs uppercase tracking-[0.2em] text-stone-500">
+            {survey.title}
+          </div>
+          <div className="text-xs text-stone-400 tabular-nums">
+            {currentIdx + 1} / {survey.questions.length}
+          </div>
         </div>
-        <div className="h-px bg-neutral-100">
+        <div className="h-px bg-stone-200">
           <div
-            className="h-full bg-neutral-900 transition-all duration-300"
+            className="h-full bg-accent transition-all duration-500"
             style={{
               width: `${((currentIdx + 1) / survey.questions.length) * 100}%`,
             }}
@@ -178,7 +185,7 @@ export default function TakePage() {
         </div>
       </header>
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         {TypeRespondent && (
           <TypeRespondent
             question={q as never}
@@ -188,11 +195,11 @@ export default function TakePage() {
             }
           />
         )}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 pt-2">
           {canGoBack && (
             <button
               onClick={back}
-              className="text-neutral-500 hover:text-neutral-900 transition-colors px-4 py-2"
+              className="text-stone-500 hover:text-accent transition-colors px-4 py-2.5"
             >
               ← Back
             </button>
@@ -200,7 +207,7 @@ export default function TakePage() {
           <button
             onClick={advance}
             disabled={!canAdvance}
-            className="bg-neutral-900 text-white px-6 py-2 hover:bg-neutral-700 transition-colors disabled:opacity-30"
+            className="bg-accent text-white px-8 py-2.5 hover:bg-accent-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {isLast ? 'Finish' : 'Next'}
           </button>

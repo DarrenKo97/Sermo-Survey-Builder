@@ -158,10 +158,10 @@ export function Respondent({
   const answers = value ?? {}
   return (
     <div className="space-y-4">
-      <div className="text-lg">
+      <div className="text-2xl font-serif leading-snug">
         {question.text}
-        {question.required && <span className="text-neutral-400 ml-1">*</span>}
-      </div>
+        {question.required && <span className="text-stone-400 ml-1">*</span>}
+        </div>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

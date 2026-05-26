@@ -127,10 +127,10 @@ export function Respondent({
 
   return (
     <div className="space-y-4">
-      <div className="text-lg">
+      <div className="text-2xl font-serif leading-snug">
         {question.text}
-        {question.required && <span className="text-neutral-400 ml-1">*</span>}
-      </div>
+        {question.required && <span className="text-stone-400 ml-1">*</span>}
+        </div>
       <div className="space-y-1">
         {order.map((itemId, i) => {
           const item = question.items.find((x) => x.id === itemId)

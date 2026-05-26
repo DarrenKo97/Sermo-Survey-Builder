@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { BranchingEditor } from '@/components/BranchingEditor'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
@@ -12,6 +11,7 @@ import {
   type QuestionType,
 } from '@/question-types'
 import type { Survey, Question } from '@/lib/types'
+import { BranchingEditor } from '@/components/BranchingEditor'
 
 export default function EditPage() {
   const { id } = useParams<{ id: string }>()
@@ -22,7 +22,7 @@ export default function EditPage() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
 
-useEffect(() => {
+  useEffect(() => {
     const loadSurvey = async () => {
       const { data, error } = await supabase
         .from('surveys')
@@ -107,19 +107,19 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <main className="min-h-screen max-w-3xl mx-auto px-6 py-16">
-        <div className="text-neutral-400 text-sm">Loading…</div>
+      <main className="min-h-screen max-w-3xl mx-auto px-6 py-20">
+        <div className="text-stone-400 text-sm">Loading…</div>
       </main>
     )
   }
 
   if (!survey) {
     return (
-      <main className="min-h-screen max-w-3xl mx-auto px-6 py-16">
-        <div className="text-neutral-500 text-sm">Survey not found.</div>
+      <main className="min-h-screen max-w-3xl mx-auto px-6 py-20">
+        <div className="text-stone-500 text-sm">Survey not found.</div>
         <Link
           href="/"
-          className="text-sm text-neutral-900 underline mt-4 inline-block"
+          className="text-sm text-accent hover:text-accent-hover underline mt-4 inline-block transition-colors"
         >
           Back to surveys
         </Link>
@@ -128,45 +128,49 @@ useEffect(() => {
   }
 
   return (
-    <main className="min-h-screen max-w-3xl mx-auto px-6 py-16">
-      <header className="mb-12">
+    <main className="min-h-screen max-w-3xl mx-auto px-6 py-20">
+      <header className="mb-16">
         <Link
           href="/"
-          className="text-xs text-neutral-400 hover:text-neutral-900 transition-colors"
+          className="text-xs uppercase tracking-[0.2em] text-stone-400 hover:text-accent transition-colors"
         >
-          ← All surveys
+          ← Surveys
         </Link>
-        <div className="flex items-end justify-between mt-3 gap-4">
+        <div className="flex items-end justify-between mt-4 gap-4 flex-wrap">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-3xl font-medium tracking-tight bg-transparent outline-none border-b border-transparent focus:border-neutral-300 transition-colors flex-1 min-w-0"
+            className="text-5xl font-serif tracking-tight bg-transparent outline-none border-b border-transparent focus:border-stone-300 transition-colors flex-1 min-w-0"
             placeholder="Untitled survey"
           />
-          <div className="flex items-center gap-4 text-sm shrink-0">
+          <div className="flex items-center gap-5 text-sm shrink-0">
             {lastSaved && (
-              <span className="text-xs text-neutral-400">
-                Saved {lastSaved.toLocaleTimeString()}
+              <span className="text-xs text-stone-400 tracking-wider">
+                Saved{' '}
+                {lastSaved.toLocaleTimeString([], {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                })}
               </span>
             )}
             <button
               onClick={exportJSON}
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-stone-500 hover:text-accent transition-colors"
             >
-              Export JSON
+              Export
             </button>
             <Link
               href={`/surveys/${id}/take`}
               target="_blank"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-stone-500 hover:text-accent transition-colors"
             >
               Preview
             </Link>
             <button
               onClick={save}
               disabled={saving}
-              className="bg-neutral-900 text-white px-4 py-2 hover:bg-neutral-700 transition-colors disabled:opacity-50"
+              className="bg-accent text-white px-5 py-2.5 hover:bg-accent-hover transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving…' : 'Save'}
             </button>
@@ -174,10 +178,10 @@ useEffect(() => {
         </div>
       </header>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         {questions.length === 0 ? (
-          <div className="border border-dashed border-neutral-200 py-16 text-center space-y-4">
-            <div className="text-neutral-500 text-sm">
+          <div className="border border-dashed border-stone-200 py-24 text-center space-y-5">
+            <div className="text-3xl font-serif text-stone-400">
               What do you want to ask first?
             </div>
             <AddQuestionButton onAdd={addQuestion} />
@@ -190,31 +194,35 @@ useEffect(() => {
               return (
                 <article
                   key={q.id}
-                  className="group border-l-2 border-neutral-100 hover:border-neutral-900 pl-6 py-2 transition-colors"
+                  className="group bg-white border border-stone-200 hover:border-accent/40 p-7 transition-colors"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="text-xs uppercase tracking-wider text-neutral-400">
-                      {String(i + 1).padStart(2, '0')} ·{' '}
-                      {questionTypeLabels[q.type as QuestionType]}
+                  <div className="flex items-start justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <span className="text-base font-serif text-accent tabular-nums">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        {questionTypeLabels[q.type as QuestionType]}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-3 text-xs text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => moveQuestion(i, -1)}
                         disabled={i === 0}
-                        className="hover:text-neutral-900 disabled:opacity-30"
+                        className="hover:text-accent disabled:opacity-30"
                       >
                         ↑
                       </button>
                       <button
                         onClick={() => moveQuestion(i, 1)}
                         disabled={i === questions.length - 1}
-                        className="hover:text-neutral-900 disabled:opacity-30"
+                        className="hover:text-accent disabled:opacity-30"
                       >
                         ↓
                       </button>
                       <button
                         onClick={() => removeQuestion(i)}
-                        className="hover:text-neutral-900"
+                        className="hover:text-accent"
                       >
                         Delete
                       </button>
@@ -228,12 +236,14 @@ useEffect(() => {
                     question={q}
                     allQuestions={questions}
                     currentIdx={i}
-                    onChange={(branches) => updateQuestion(i, { ...q, branches })}
+                    onChange={(branches) =>
+                      updateQuestion(i, { ...q, branches })
+                    }
                   />
                 </article>
               )
             })}
-            <div className="pt-4 pl-6">
+            <div className="pt-2">
               <AddQuestionButton onAdd={addQuestion} />
             </div>
           </>
@@ -249,26 +259,16 @@ function AddQuestionButton({
   onAdd: (type: QuestionType) => void
 }) {
   const [open, setOpen] = useState(false)
-  if (questionTypeList.length === 1) {
-    return (
-      <button
-        onClick={() => onAdd(questionTypeList[0])}
-        className="text-sm border border-neutral-200 px-4 py-2 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors"
-      >
-        + Add question
-      </button>
-    )
-  }
   return (
     <div className="relative inline-block">
       <button
         onClick={() => setOpen(!open)}
-        className="text-sm border border-neutral-200 px-4 py-2 hover:bg-neutral-900 hover:text-white hover:border-neutral-900 transition-colors"
+        className="text-sm border border-stone-300 bg-white px-5 py-2.5 hover:bg-accent hover:text-white hover:border-accent transition-colors"
       >
         + Add question
       </button>
       {open && (
-        <div className="absolute mt-1 bg-white border border-neutral-200 shadow-sm z-10 min-w-40">
+        <div className="absolute mt-2 bg-white border border-stone-200 shadow-md z-10 min-w-[180px]">
           {questionTypeList.map((t) => (
             <button
               key={t}
@@ -276,7 +276,7 @@ function AddQuestionButton({
                 onAdd(t)
                 setOpen(false)
               }}
-              className="block w-full text-left px-4 py-2 text-sm hover:bg-neutral-50"
+              className="block w-full text-left px-4 py-2.5 text-sm hover:bg-stone-50 hover:text-accent transition-colors"
             >
               {questionTypeLabels[t]}
             </button>
