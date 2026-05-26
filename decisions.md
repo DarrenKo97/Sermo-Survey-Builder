@@ -1,4 +1,4 @@
-# decisions.md
+# Decisions
 
 Working doc. Locked before I write a line of code.
 
