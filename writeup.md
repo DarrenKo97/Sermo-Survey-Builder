@@ -1,6 +1,7 @@
-# Sermo Survey Builder — Writeup
+# Sermo Survey Builder Writeup
 
 **Live demo:** [My Vercel Application](https://sermo-survey-builder.vercel.app/)
+
 **Repo:** [My Github Repo](https://github.com/DarrenKo97/Sermo-Survey-Builder)
 
 ## Five UX decisions made differently from Qualtrics
@@ -24,26 +25,26 @@ One concept. One place. The forward-only, block-scoped, page-break-injecting rul
 
 Asking "how many years have you been in practice?" in Qualtrics means picking Text Entry, then drilling into the sidebar to find Content Type, then choosing Number, then setting Min and Max. Numeric isn't in the question-type picker at all. For a tool aimed at clinical research where numeric answers are common (years in practice, patients per week, dosages), that's setup friction every time. My tool lists Number alongside the other four types, with min, max, and decimals as primary fields in the editor.
 
-![Qualtrics Text Entry with Number validation in sidebar](Screenshot_20260526_102657.png)
-![Qualtrics question-type picker, no numeric option](Screenshot_20260526_102202.png)
+![Qualtrics Text Entry with Number validation in sidebar](screenshots/Screenshot_20260526_102046.png)
+![Qualtrics question-type picker, no numeric option](screenshots/Screenshot_20260526_102202.png)
 
 **3. No blocks.**
 
 Qualtrics organizes surveys into Blocks, which is where most of the routing complexity comes from. Blocks scope skip logic. Blocks force you into Survey Flow to compose anything across them. Blocks also create a hidden Trash block that parks your deleted questions instead of removing them (I found mine still in the exported QSF). For a linear survey with one branching primitive, blocks add complexity for no obvious user benefit. My tool stores questions as a flat ordered array. Delete deletes. Reorder moves position. The data model fits on one line.
 
-![Qualtrics Survey Flow with multiple blocks](Screenshot_20260526_113044.png)
+![Qualtrics Survey Flow with multiple blocks](screenshots/Screenshot_20260526_130147.png)
 
 **4. The empty state asks a question instead of pre-inserting one.**
 
 Open a new survey in Qualtrics and there's already a three-option multiple choice question sitting there with placeholder text. You spend the first second of every new survey figuring out whether that's yours or a template, then either edit it or delete it. My empty state asks "What do you want to ask first?" in serif display and waits. The first real action is intentional, not a cleanup.
 
-![Qualtrics empty state with default question](Screenshot_20260526_100922.png)
+![Qualtrics empty state with default question](screenshots/Screenshot_20260526_100922.png)
 
 **5. JSON is the primary export. The definition is data, not a backup format.**
 
 Export in Qualtrics is two levels deep under a generic Tools menu (Tools → Import/Export → Export Survey), and what you get back is a `.qsf` file. Their own docs warn you not to open it because editing breaks things. My tool puts Export at the top of the page next to Preview and Save, and what comes out is plain JSON with the same shape as the runtime data. Anyone can open it, read it, modify it, or feed it into a script.
 
-![Qualtrics Tools menu, Export buried inside](Screenshot_20260526_131107.png)
+![Qualtrics Tools menu, Export buried inside](screenshots/Screenshot_20260526_131107.png)
 
 ## Three features I deliberately left out
 
@@ -65,4 +66,4 @@ Why this works for an agent: the contract is small, five exports per type, and t
 
 ## Tool use
 
-Built with Claude in the chat interface for architecture, code, and writeup help. Roughly three hours of focused build time after a Qualtrics recon and an architecture pass on paper. The plan, contract design, scaffolding, and most component code came from Claude. Every file in `src/` got reviewed by hand before commit, and the bugs that came up (a React Compiler hoisting issue, the Supabase publishable-key rename, numeric validation gating, a back-button branching edge case) got diagnosed and patched live in the conversation. Stack: Next.js 16, Tailwind v4, Supabase with open-RLS for the demo, Vercel for hosting.
+Built with Claude for architecture, code, and writeup help. Roughly three hours of focused build time after a Qualtrics recon and an architecture pass on paper. The plan, contract design, scaffolding, and most component code came from Claude. Every file in `src/` got reviewed by hand before commit, and the bugs that came up (a React Compiler hoisting issue, the Supabase publishable-key rename, numeric validation gating, a back-button branching edge case) got diagnosed and patched live in the conversation. Stack: Next.js 16, Tailwind v4, Supabase with open-RLS for the demo, Vercel for hosting.
