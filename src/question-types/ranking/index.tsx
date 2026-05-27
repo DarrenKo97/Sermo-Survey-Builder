@@ -1,6 +1,7 @@
 'use client'
 
 import type { RankingQuestion } from '@/lib/types'
+import { useEffect, useState } from 'react'
 
 export const defaultValue = (id: string): RankingQuestion => ({
   id,
@@ -91,14 +92,6 @@ export function Editor({
       >
         + Add item
       </button>
-      <label className="flex items-center gap-2 text-xs text-neutral-500 pt-2">
-        <input
-          type="checkbox"
-          checked={question.required}
-          onChange={(e) => onChange({ ...question, required: e.target.checked })}
-        />
-        Required
-      </label>
     </div>
   )
 }
@@ -112,6 +105,12 @@ export function Respondent({
   value: string[] | undefined
   onChange: (v: string[]) => void
 }) {
+    useEffect(() => {
+     if (value === undefined) {
+       onChange(question.items.map((item) => item.id))
+     }
+   }, [value, question.items, onChange])
+
   const order =
     value && value.length === question.items.length
       ? value

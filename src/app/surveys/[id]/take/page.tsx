@@ -7,6 +7,49 @@ import { supabase } from '@/lib/supabase'
 import { registry, type QuestionType } from '@/question-types'
 import type { Survey, Question, Answers, Branch } from '@/lib/types'
 
+function formatAnswer(question: Question, value: unknown): string {
+  if (value === undefined || value === null) return '—'
+
+  switch (question.type) {
+    case 'singleSelect': {
+      const option = question.options.find((o) => o.id === value)
+      return option?.label ?? String(value)
+    }
+    case 'multiSelect': {
+      if (!Array.isArray(value)) return '—'
+      return question.options
+        .filter((o) => value.includes(o.id))
+        .map((o) => o.label)
+        .join(', ')
+    }
+    case 'numeric': {
+      return String(value)
+    }
+    case 'grid': {
+      if (typeof value !== 'object' || value === null) return '—'
+      const v = value as Record<string, string>
+      return question.rows
+        .map((row) => {
+          const colId = v[row.id]
+          const col = question.columns.find((c) => c.id === colId)
+          return `${row.label}: ${col?.label ?? '—'}`
+        })
+        .join('\n')
+    }
+    case 'ranking': {
+      if (!Array.isArray(value)) return '—'
+      return value
+        .map((itemId, idx) => {
+          const item = question.items.find((i) => i.id === itemId)
+          return `${idx + 1}. ${item?.label ?? itemId}`
+        })
+        .join('\n')
+    }
+    default:
+      return String(value)
+  }
+}
+
 export default function TakePage() {
   const { id } = useParams<{ id: string }>()
   const [survey, setSurvey] = useState<Survey | null>(null)
@@ -114,7 +157,11 @@ export default function TakePage() {
     )
   }
 
-  if (done) {
+if (done) {
+    const answered = survey.questions.filter(
+      (q) => answers[q.id] !== undefined
+    )
+
     return (
       <main className="min-h-screen max-w-2xl mx-auto px-6 py-24">
         <div className="border-l-2 border-accent pl-8">
@@ -122,16 +169,29 @@ export default function TakePage() {
             Complete
           </div>
           <h2 className="text-5xl font-serif mb-8 tracking-tight">
-            Thank you.
+            Thank You!
           </h2>
-          <details className="text-sm text-stone-500">
-            <summary className="cursor-pointer hover:text-stone-900 transition-colors">
-              View captured answers
-            </summary>
-            <pre className="mt-4 p-5 bg-stone-100 text-xs overflow-auto border border-stone-200">
-              {JSON.stringify(answers, null, 2)}
-            </pre>
-          </details>
+
+          {answered.length > 0 && (
+            <details className="bg-stone-200 rounded-lg p-6 text-sm">
+              <summary className="cursor-pointer text-stone-700 hover:text-stone-900 transition-colors">
+                Review your responses
+              </summary>
+              <dl className="mt-6 space-y-6">
+                {answered.map((q) => (
+                  <div key={q.id}>
+                    <dt className="text-sm text-stone-600 mb-1">
+                      {q.text}
+                    </dt>
+                    <dd className="text-base text-stone-900 leading-relaxed whitespace-pre-line">
+                      {formatAnswer(q, answers[q.id])}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
+          )}
+
           <div className="mt-10 flex gap-5 text-sm">
             <Link
               href={`/surveys/${id}/edit`}
